@@ -136,20 +136,37 @@ uint8_t matrix_key_count(void)
 
 /* Column pin configuration
  * col: 0   1   2   3   4   5   6   7   8   9   10  11  12  13
- * pin: F0  F1  E6  C7  C6  B6  D4  B1  B0  B5  B4  D7  D6  B3  (Rev.A)
+ * pin: F0  F1  E6  C7  C6  B6  D4  B1  63  B5  B4  D7  D6  B3  (Rev.A)
  * pin:                                 B7                      (Rev.B)
  */
+
+ /*
+col:  0   1   2   3   4   5   6   7   8   9   10  11  12  13
+pin: B5  B6  F7  B0  B1  B4  B3  B7  D0   D1  D2  D3  C6  C7
+
+row:  0   1   2   3   4
+pin: F0  F1  F4  F5  F6
+*/
+
 static void  init_cols(void)
 {
     // Input with pull-up(DDR:0, PORT:1)
+    /*DDRF  &= ~(1<<7);
+    PORTF |=  (1<<7);
+    DDRB  &= ~(1<<7 | 1<<6 | 1<<5 | 1<<3 | 1<<2 | 1<<1 | 1<<0);
+    PORTB |=  (1<<7 | 1<<6 | 1<<5 | 1<<3 | 1<<2 | 1<<1 | 1<<0);
+    DDRD  &= ~(1<<3 | 1<<2 | 1<<1 | 1<<0);
+    PORTD |=  (1<<3 | 1<<2 | 1<<1 | 1<<0);
+    DDRC  &= ~(1<<7 | 1<<6);
+    PORTC |=  (1<<7 | 1<<6);*/
+    DDRB  &= ~(1<<7 | 1<<6 | 1<<5 | 1<<4 | 1<<3| 1<<1 | 1<<0);
+    PORTB |=  (1<<7 | 1<<6 | 1<<5 | 1<<4 | 1<<3| 1<<1 | 1<<0);
     DDRF  &= ~(1<<7);
     PORTF |=  (1<<7);
-    DDRB  &= ~(1<<0 | 1<<1 | 1<<2 | 1<<3 | 1<<5 | 1<< 6 | 1<<7);
-    PORTB |=  (1<<0 | 1<<1 | 1<<2 | 1<<3 | 1<<5 | 1<< 6 | 1<<7);
-    DDRD  &= ~(1<<0 | 1<<1 | 1<<2 | 1<<3);
-    PORTD |=  (1<<0 | 1<<1 | 1<<2 | 1<<3);
-    DDRC  &= ~(1<<6 | 1<<7);
-    PORTC |=  (1<<6 | 1<<7);
+    DDRD  &= ~(1<<3 | 1<<2 | 1<<1 | 1<<0);
+    PORTD |=  (1<<3 | 1<<2 | 1<<1 | 1<<0);
+    DDRC  &= ~(1<<7 | 1<<6);
+    PORTC |=  (1<<7 | 1<<6);
     
     
     
@@ -163,10 +180,10 @@ static matrix_row_t read_cols(void)
            (PINF&(1<<7) ? 0 : (1<<2)) |
            (PINB&(1<<0) ? 0 : (1<<3)) |
            (PINB&(1<<1) ? 0 : (1<<4)) |
-           (PINB&(1<<2) ? 0 : (1<<5)) |
+           (PINB&(1<<4) ? 0 : (1<<5)) |
            (PINB&(1<<3) ? 0 : (1<<6)) |
            (PINB&(1<<7) ? 0 : (1<<7)) |
-           (PINC&(1<<0) ? 0 : (1<<8)) |     // Rev.A and B
+           (PIND&(1<<0) ? 0 : (1<<8)) |     // Rev.A and B
            (PIND&(1<<1) ? 0 : (1<<9)) |
            (PIND&(1<<2) ? 0 : (1<<10)) |
            (PIND&(1<<3) ? 0 : (1<<11)) |
@@ -181,6 +198,8 @@ static matrix_row_t read_cols(void)
 static void unselect_rows(void)
 {
     // Hi-Z(DDR:0, PORT:0) to unselect
+    //DDRF  &= ~0b01110011;
+    //PORTF &= ~0b01110011;
     DDRF  &= ~0b01110011;
     PORTF &= ~0b01110011;
 }
@@ -188,6 +207,28 @@ static void unselect_rows(void)
 static void select_row(uint8_t row)
 {
     // Output low(DDR:1, PORT:0) to select
+    /*switch (row) {
+        case 0:
+            DDRF  |= (1<<0);
+            PORTF &= ~(1<<0);
+            break;
+        case 1:
+            DDRF  |= (1<<1);
+            PORTF &= ~(1<<1);
+            break;
+        case 2:
+            DDRF  |= (1<<4);
+            PORTF &= ~(1<<4);
+            break;
+        case 3:
+            DDRF  |= (1<<5);
+            PORTF &= ~(1<<5);
+            break;
+        case 4:
+            DDRF  |= (1<<6);
+            PORTF &= ~(1<<6);
+            break;
+    }*/
     switch (row) {
         case 0:
             DDRF  |= (1<<0);
