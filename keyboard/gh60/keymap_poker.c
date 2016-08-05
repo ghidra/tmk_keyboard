@@ -12,7 +12,7 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
            MUTE, TRNS,   UP, TRNS, TRNS, TRNS, TRNS,   P7,   P8,   P9, TRNS, TRNS, TRNS, PSCR, \
            VOLU, LEFT, DOWN,RIGHT, TRNS, TRNS, TRNS,   P4,   P5,   P6, SCLN, QUOT,       HOME, \
            VOLD, TRNS, TRNS, TRNS, TRNS, TRNS, TRNS,   P1,   P2,   P3, PGUP,              END, \
-           LSFT, TRNS, TRNS, TRNS,               P0,                   PGDN,       TRNS, TRNS),
+           LSFT, TRNS, TRNS,               P0,                   PGDN, TRNS,       TRNS, TRNS),
 };
 const uint16_t PROGMEM fn_actions[] = {
     [0] = ACTION_LAYER_MOMENTARY(1),
